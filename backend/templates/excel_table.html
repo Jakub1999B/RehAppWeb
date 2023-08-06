@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Excel Table: {{ filename }}</title>
+</head>
+<body>
+    <h1>Excel Table: {{ filename }}</h1>
+    <table>
+        <thead>
+            <tr>
+                {% for cell in header %}
+                <th>{{ cell }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                {% for cell in row %}
+                <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
