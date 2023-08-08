@@ -1,5 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, Request
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import shutil
@@ -49,6 +49,18 @@ async def read_root(request: Request):
     )
 
 
+# @app.post("/uploadfile/")
+# async def upload_file(file: UploadFile = File(...)):
+#     async with database.transaction():
+#         query = files.insert().values(filename=file.filename)
+#         last_record_id = await database.execute(query)
+#
+#         file_path = f"static/{last_record_id}_{file.filename}"
+#         with open(file_path, "wb") as f:
+#             shutil.copyfileobj(file.file, f)
+#
+#     return {"filename": file.filename}
+
 @app.post("/uploadfile/")
 async def upload_file(file: UploadFile = File(...)):
     async with database.transaction():
@@ -59,7 +71,8 @@ async def upload_file(file: UploadFile = File(...)):
         with open(file_path, "wb") as f:
             shutil.copyfileobj(file.file, f)
 
-    return {"filename": file.filename}
+    return JSONResponse(content={"id": last_record_id, "filename": file.filename})
+
 
 
 @app.get("/files/{file_id}/")
@@ -72,6 +85,32 @@ async def read_file(file_id: int):
         return FileResponse(file_path, media_type="application/octet-stream")
 
     return {"error": "File not found"}
+
+from fastapi.responses import HTMLResponse
+
+@app.get("/files/{file_id}/content", response_class=HTMLResponse)
+async def read_file_content(file_id: int):
+    query = files.select().where(files.c.id == file_id)
+    result = await database.fetch_one(query)
+
+    if result:
+        file_path = f"static/{result['id']}_{result['filename']}"
+        try:
+            with open(file_path, "r") as f:
+                file_content = f.read()
+            return templates.TemplateResponse(
+                "file_table_content.html", {"request": None, "file_content": file_content}
+            )
+        except FileNotFoundError:
+            return templates.TemplateResponse(
+                "file_table_content.html", {"request": None, "file_content": "File not found"}
+            )
+
+    return templates.TemplateResponse(
+        "file_table_content.html", {"request": None, "file_content": "File not found"}
+    )
+
+
 
 
 from fastapi.responses import JSONResponse
@@ -96,6 +135,46 @@ async def delete_file(file_id: int):
         return JSONResponse(content={"message": "File deleted successfully"})
 
     return JSONResponse(content={"error": "File not found"}, status_code=404)
+
+
+from fastapi.responses import HTMLResponse
+
+from fastapi import Depends
+
+
+from fastapi.responses import JSONResponse
+
+# ... (other imports and code)
+
+@app.get("/files/{file_id}/table-content", response_class=HTMLResponse)
+async def read_file_table_content(file_id: int, request: Request):
+    query = files.select().where(files.c.id == file_id)
+    result = await database.fetch_one(query)
+
+    if result:
+        file_path = f"static/{result['id']}_{result['filename']}"
+        try:
+            with open(file_path, "r") as f:
+                file_content = f.readlines()
+            file_content_lines = [(line_number + 1, line.strip()) for line_number, line in enumerate(file_content)]
+            return templates.TemplateResponse(
+                "file_table_content.html", {"request": request, "file_content_lines": file_content_lines}
+            )
+        except FileNotFoundError:
+            return templates.TemplateResponse(
+                "file_table_content.html", {"request": request, "file_content_lines": [(1, "File not found")]}
+            )
+        except Exception as e:
+            return templates.TemplateResponse(
+                "file_table_content.html", {"request": request, "file_content_lines": [(1, f"Error: {e}")]}
+            )
+
+    return templates.TemplateResponse(
+        "file_table_content.html", {"request": request, "file_content_lines": [(1, "File not found")]}
+    )
+
+
+
 
 
 if __name__ == "__main__":

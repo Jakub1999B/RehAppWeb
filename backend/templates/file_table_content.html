@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Table Content</title>
+</head>
+<body>
+    <h1>File Table Content</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Line Number</th>
+                <th>Content</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for line_number, line_content in file_content_lines %}
+            <tr>
+                <td>{{ line_number }}</td>
+                <td>{{ line_content }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

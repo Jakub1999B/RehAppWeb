@@ -4,33 +4,53 @@
     <title>File Upload and Management</title>
 </head>
 <body>
-    <h1>File Upload and Management</h1>
-    <form action="/uploadfile/" enctype="multipart/form-data" method="post">
-        <input type="file" name="file">
-        <button type="submit">Upload</button>
-    </form>
-    <hr>
     <h2>Uploaded Files</h2>
-    <ul>
+    <ul id="file-list">
         {% for file in files %}
         <li>
             <a href="/files/{{ file['id'] }}/">{{ file['filename'] }}</a>
             <button class="delete-button" data-file-id="{{ file['id'] }}">Delete</button>
+            <a href="/files/{{ file['id'] }}/table-content">
+                <button class="view-content-button">View Content</button>
+            </a>
         </li>
         {% endfor %}
     </ul>
+    <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button type="submit">Upload</button>
+    </form>
     <script>
+        const fileList = document.getElementById('file-list');
+        const uploadForm = document.getElementById('upload-form');
+        const fileContent = document.getElementById('file-content');
+        const fileContentText = document.getElementById('file-content-text');
+        const viewContentButtons = document.querySelectorAll('.view-content-button'); // Select all "View Content" buttons
+
+        uploadForm.addEventListener('submit', async (event) => {
+            // ... (upload form code, same as before)
+        });
+
         const deleteButtons = document.querySelectorAll('.delete-button');
         deleteButtons.forEach(button => {
+            // ... (delete button code, same as before)
+        });
+
+        viewContentButtons.forEach(button => {
             button.addEventListener('click', async () => {
                 const fileId = button.getAttribute('data-file-id');
-                const response = await fetch(`/files/${fileId}/`, { method: 'DELETE' });
+                const response = await fetch(`/files/${fileId}/table-content`);
                 if (response.ok) {
-                    button.parentNode.remove();
+                    const fileContentData = await response.text();
+                    fileContentText.innerHTML = fileContentData;
+                    fileContent.style.display = 'block';
                 }
             });
         });
     </script>
+
+
+
 
 </body>
 </html>
