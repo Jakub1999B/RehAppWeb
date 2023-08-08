@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Upload and Management</title>
+</head>
+<body>
+    <h1>File Upload and Management</h1>
+    <form action="/uploadfile/" enctype="multipart/form-data" method="post">
+        <input type="file" name="file">
+        <button type="submit">Upload</button>
+    </form>
+    <hr>
+    <h2>Uploaded Files</h2>
+    <ul>
+        {% for file in files %}
+        <li>
+            <a href="/files/{{ file['id'] }}/">{{ file['filename'] }}</a>
+            <button class="delete-button" data-file-id="{{ file['id'] }}">Delete</button>
+        </li>
+        {% endfor %}
+    </ul>
+    <script>
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', async () => {
+                const fileId = button.getAttribute('data-file-id');
+                const response = await fetch(`/files/${fileId}/`, { method: 'DELETE' });
+                if (response.ok) {
+                    button.parentNode.remove();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Table</title>
+</head>
+<body>
+    <h1>Delete Table</h1>
+    <form method="post">
+        <label for="table_name">Table Name:</label>
+        <input type="text" id="table_name" name="table_name" required>
+        <button type="submit">Delete Table</button>
+    </form>
+    {% if table_name %}
+    <p>Table '{{ table_name }}' has been deleted.</p>
+    {% endif %}
+</body>
+</html>
