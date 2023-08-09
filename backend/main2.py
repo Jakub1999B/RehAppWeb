@@ -11,7 +11,7 @@ from sqlalchemy.orm import sessionmaker
 from databases import Database
 from pydantic import BaseModel
 
-DATABASE_URL = "sqlite:///./tes.db"
+DATABASE_URL = "sqlite:///./data.db"
 
 database = Database(DATABASE_URL)
 
@@ -61,17 +61,41 @@ async def read_root(request: Request):
 #
 #     return {"filename": file.filename}
 
-@app.post("/uploadfile/")
-async def upload_file(file: UploadFile = File(...)):
+# @app.post("/uploadfile/")
+# async def upload_file(file: UploadFile = File(...)):
+#     async with database.transaction():
+#         query = files.insert().values(filename=file.filename)
+#         last_record_id = await database.execute(query)
+#
+#         file_path = f"static/{last_record_id}_{file.filename}"
+#         with open(file_path, "wb") as f:
+#             shutil.copyfileobj(file.file, f)
+#
+#     return JSONResponse(content={"id": last_record_id, "filename": file.filename})
+
+import pandas as pd
+
+class ExcelFileUpload(BaseModel):
+    file: UploadFile
+
+@app.post("/upload-excel/")
+async def upload_excel_file(file: UploadFile = File(...)):
+    if file.content_type != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+        return JSONResponse(content={"error": "Only Excel files (XLSX) are allowed"}, status_code=400)
+
     async with database.transaction():
-        query = files.insert().values(filename=file.filename)
+        query = files.insert().values(filename=file.filename, is_excel=True)  # Add 'is_excel' column to files table
         last_record_id = await database.execute(query)
 
         file_path = f"static/{last_record_id}_{file.filename}"
         with open(file_path, "wb") as f:
-            shutil.copyfileobj(file.file, f)
+            f.write(file.file.read())
 
-    return JSONResponse(content={"id": last_record_id, "filename": file.filename})
+        df = pd.read_excel(file_path)
+        table_name = f"table_{last_record_id}"
+        df.to_sql(table_name, con=engine, if_exists="replace")
+
+    return JSONResponse(content={"message": "Excel file uploaded and data stored in SQL table"})
 
 
 

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Files</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Upload Files</h1>
+    <form action="/uploadfile/" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button type="submit">Upload</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Filename</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in files %}
+            <tr>
+                <td>{{ file[1] }}</td>
+                <td>
+                    <button class="delete-btn" data-file-id="{{ file[0] }}">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function () {
+            $(".delete-btn").on("click", function () {
+                var fileId = $(this).data("file-id");
+                $.ajax({
+                    type: "POST",
+                    url: "/file/delete/" + fileId + "/",
+                    success: function (response) {
+                        alert("File deleted successfully");
+                        // Optionally, you can update the file list dynamically here
+                    },
+                    error: function () {
+                        alert("Error deleting file");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
