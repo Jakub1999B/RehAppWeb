@@ -304,8 +304,37 @@ def reh_app(file_path, sc=False):
             recognized_df[i]['zero line'] = zero.tolist()
             recognized_df[i]['x_peaks'] = x_peaks
             recognized_df[i]['y_peaks'] = y_peaks
-    print(recognized_df)
-    return recognized_df
+    # print(recognized_df)
+
+    BEND = 0
+    CIRCULAR_RISE = 0
+    ABDUCTION = 0
+    REAR_TOUCH = 0
+    SIDE_BEND = 0
+
+    for i in range(len(recognized_df)):
+        if recognized_df[i]['activity_int'] == 1:
+            BEND += recognized_df[i]['repetition counts peaks']
+        elif recognized_df[i]['activity_int'] == 2:
+            CIRCULAR_RISE += recognized_df[i]['repetition counts peaks']
+        elif recognized_df[i]['activity_int'] == 3:
+            ABDUCTION += recognized_df[i]['repetition counts peaks']
+        elif recognized_df[i]['activity_int'] == 4:
+            REAR_TOUCH += recognized_df[i]['repetition counts peaks']
+        elif recognized_df[i]['activity_int'] == 5:
+            SIDE_BEND += recognized_df[i]['repetition counts peaks']
+
+    summary_count = {
+        'BEND': BEND,
+        'CIRCULAR_RISE': CIRCULAR_RISE,
+        'ABDUCTION': ABDUCTION,
+        'REAR_TOUCH': REAR_TOUCH,
+        'SIDE_BEND': SIDE_BEND
+    }
+
+    duration = recognized_df[-1]['end[s]']
+
+    return recognized_df, summary_count, duration
 
 
 

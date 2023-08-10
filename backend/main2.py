@@ -45,7 +45,7 @@ async def read_root(request: Request):
     query = files.select()
     result = await database.fetch_all(query)
     return templates.TemplateResponse(
-        "index.html", {"request": request, "files": result}
+        "index2.html", {"request": request, "files": result}
     )
 
 

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Upload and Management</title>
+</head>
+<body>
+    <h2>Uploaded Files</h2>
+    <ul id="file-list">
+        {% for file in files %}
+        {% if file['is_excel'] %}
+        <li>
+            <a href="/files/{{ file['id'] }}/content">{{ file['filename'] }}</a>
+            <button class="delete-button" data-file-id="{{ file['id'] }}">Delete</button>
+            <a href="/files/{{ file['id'] }}/table-content">
+                <button class="view-content-button">View Content</button>
+            </a>
+        </li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+
+    <form id="upload-form-excel" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button type="submit">Upload Excel</button>
+    </form>
+    <script>
+        const fileList = document.getElementById('file-list');
+        const uploadForm = document.getElementById('upload-form');
+        const uploadFormExcel = document.getElementById('upload-form-excel');
+        const fileContent = document.getElementById('file-content');
+        const fileContentText = document.getElementById('file-content-text');
+        const viewContentButtons = document.querySelectorAll('.view-content-button');
+
+        uploadForm.addEventListener('submit', async (event) => {
+            // ... (upload form code, same as before)
+        });
+
+        uploadFormExcel.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(uploadFormExcel);
+            const response = await fetch('/upload-excel/', {
+                method: 'POST',
+                body: formData
+            });
+            if (response.ok) {
+                alert("Excel file uploaded and data stored in SQL table");
+                location.reload(); // Refresh the page to update the list
+            } else {
+                const data = await response.json();
+                alert(data.error);
+            }
+        });
+
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(button => {
+            // ... (delete button code, same as before)
+        });
+
+        viewContentButtons.forEach(button => {
+            button.addEventListener('click', async () => {
+                const fileId = button.getAttribute('data-file-id');
+                const response = await fetch(`/files/${fileId}/table-content`);
+                if (response.ok) {
+                    const fileContentData = await response.text();
+                    fileContentText.innerHTML = fileContentData;
+                    fileContent.style.display = 'block';
+                }
+            });
+        });
+    </script>
+
+
+
+
+</body>
+</html>
