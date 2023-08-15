@@ -36,8 +36,8 @@
             <input type="file" id="file-input" accept=".xlsx, .csv" required>
             <button type="button" id="analyze-button">Analyze</button>
         </form>
-        <div id="loading-container" style="display: none;">
-            <p>Loading...</p>
+        <div id="loading-container" style="display: none;" class="loading-container">
+            <div>Loading...</div>
         </div>
         <div id="result-container">
             <!-- Rectangles for displaying the results -->
@@ -72,10 +72,15 @@
 <script>
     document.getElementById('analyze-button').addEventListener('click', async () => {
         const fileInput = document.getElementById('file-input');
+        const loadingContainer = document.getElementById('loading-container');
+        const resultContainer = document.getElementById('result-container');
         const formData = new FormData();
         formData.append('file', fileInput.files[0]);
 
         try {
+            loadingContainer.style.display = 'flex'; // Display loading process
+            resultContainer.style.display = 'none'; // Hide result container
+
             const response = await fetch('/analyzes/', {
                 method: 'POST',
                 body: formData
@@ -88,12 +93,19 @@
                 document.getElementById('abduction-result').textContent = result.ABDUCTION || '0';
                 document.getElementById('rear-touch-result').textContent = result.REAR_TOUCH || '0';
                 document.getElementById('side-bend-result').textContent = result.SIDE_BEND || '0';
+
+                loadingContainer.style.display = 'none'; // Hide loading process
+                resultContainer.style.display = 'block'; // Display result container
             } else {
                 console.error('Analyze request failed.');
+                loadingContainer.style.display = 'none'; // Hide loading process on error
             }
         } catch (error) {
             console.error('An error occurred:', error);
+            loadingContainer.style.display = 'none'; // Hide loading process on error
         }
     });
 </script>
+
+
 </html>
