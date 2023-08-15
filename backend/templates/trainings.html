@@ -28,6 +28,7 @@
         </nav>
     </header>
 
+
     <div class="content">
         <h2>Trainings</h2>
         <table>
@@ -52,11 +53,16 @@
                     <td>{{ record.side_bend }}</td>
                     <td>{{ record.duration }}</td>
                 </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8">No records found</td>
+                </tr>
             {% endfor %}
         </table>
     </div>
 
+
 </body>
 
-<script src="exercises.js"></script>
+
 </html>
