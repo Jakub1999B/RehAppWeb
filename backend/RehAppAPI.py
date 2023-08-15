@@ -89,6 +89,18 @@ async def show_analyze():
         content = f.read()
     return content
 
+@app.get("/exercises", response_class=HTMLResponse)
+async def show_analyze():
+    with open(f"templates/exercises.html", "r") as f:
+        content = f.read()
+    return content
+
+@app.get("/contact", response_class=HTMLResponse)
+async def show_analyze():
+    with open(f"templates/contact.html", "r") as f:
+        content = f.read()
+    return content
+
 # @app.post("/analyzes/")
 # async def analyze(file: UploadFile = File(...)):
 #     df, summary_count, duration = reh_app(file.file)
@@ -128,15 +140,46 @@ async def trainings(request: Request):
     finally:
         db.close()
 
+#
+#
+#
+# @app.post("/analyzes/", response_class=HTMLResponse)
+# async def analyze(request: Request, file: UploadFile = File(...)):
+#     try:
+#         db = SessionLocal()
+#         df, summary_count, duration = reh_app(file.file)
+#         encoded_content = json.dumps(summary_count, cls=CustomJSONEncoder)
+#
+#         new_record = TrainingRecord(
+#             bend=summary_count.get('BEND', 0),
+#             circular_raise=summary_count.get('CIRCULAR_RAISE', 0),
+#             abduction=summary_count.get('ABDUCTION', 0),
+#             rear_touch=summary_count.get('REAR_TOUCH', 0),
+#             side_bend=summary_count.get('SIDE_BEND', 0),
+#             duration=duration
+#         )
+#
+#         db.add(new_record)
+#         db.commit()
+#
+#         return templates.TemplateResponse(
+#             "analyze.html",
+#             {"request": request, "encoded_content": encoded_content},
+#         )
+#     except Exception as e:
+#         print("Error:", e)
+#         raise
+#     finally:
+#         db.close()
 
+# ... (your existing imports) ...
 
-
-@app.post("/analyzes/", response_class=HTMLResponse)
-async def analyze(request: Request, file: UploadFile = File(...)):
+@app.post("/analyzes/", response_class=JSONResponse)
+async def analyze(file: UploadFile = File(...)):
     try:
         db = SessionLocal()
         df, summary_count, duration = reh_app(file.file)
-        encoded_content = json.dumps(df, cls=CustomJSONEncoder)
+        encoded_content = jsonable_encoder(summary_count)
 
         new_record = TrainingRecord(
             bend=summary_count.get('BEND', 0),
@@ -150,16 +193,12 @@ async def analyze(request: Request, file: UploadFile = File(...)):
         db.add(new_record)
         db.commit()
 
-        return templates.TemplateResponse(
-            "analyze.html",
-            {"request": request, "encoded_content": encoded_content},
-        )
+        return encoded_content
     except Exception as e:
         print("Error:", e)
         raise
     finally:
         db.close()
-
 
 
 
