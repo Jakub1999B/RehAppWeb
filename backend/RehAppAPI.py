@@ -98,17 +98,17 @@ async def analyze(file: UploadFile = File(...)):
 from fastapi.responses import HTMLResponse
 from fastapi.requests import Request
 
-@app.get("/analyze/", response_class=HTMLResponse)
-async def show_analyze_page(request: Request):
-    return templates.TemplateResponse("analyze.html", {"request": request})
-
-
-@app.get("/trainings/", response_class=HTMLResponse)
-async def show_trainings(request: Request):
-    db = SessionLocal()
-    records = db.query(TrainingRecord).all()
-    db.close()
-    return templates.TemplateResponse("trainings.html", {"request": request, "records": records})
+# @app.get("/analyze/", response_class=HTMLResponse)
+# async def show_analyze_page(request: Request):
+#     return templates.TemplateResponse("analyze.html", {"request": request})
+#
+#
+# @app.get("/trainings/", response_class=HTMLResponse)
+# async def show_trainings(request: Request):
+#     db = SessionLocal()
+#     records = db.query(TrainingRecord).all()
+#     db.close()
+#     return templates.TemplateResponse("trainings.html", {"request": request, "records": records})
 
 
 

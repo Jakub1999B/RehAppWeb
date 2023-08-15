@@ -35,7 +35,7 @@
                 <span class="arrow">&#9660;</span>
                 <div class="exercise-details">
                     <p class="exercise-details-text">Description of Bend exercise.</p>
-                    <img src="wer.png" alt="Bend Exercise">
+                    <img src="/static/wer.png" alt="Bend Exercise">
                 </div>
             </div>
             <div class="exercise" data-title="CircularRaise">
@@ -74,6 +74,20 @@
     </div>
 
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const exercises = document.querySelectorAll('.exercise');
 
-<script src="exercises.js"></script>
+        exercises.forEach(exercise => {
+            const arrow = exercise.querySelector('.arrow'); // Select the arrow within the exercise
+            const exerciseDetails = exercise.querySelector('.exercise-details');
+
+            exercise.addEventListener('click', () => {
+                exerciseDetails.classList.toggle('show');
+                arrow.classList.toggle('rotate'); // Toggle the rotate class on the arrow
+            });
+        });
+    });
+</script>
+
 </html>
