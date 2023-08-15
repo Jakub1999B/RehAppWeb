@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>{% block title %}RehApp{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul class="left-links">
+                <li><a href="#" data-page="trainings">Trainings</a></li>
+                <li><a href="#" data-page="analyze">Analyze</a></li>
+            </ul>
+        </nav>
+        <div class="center-logo">
+            <a href="home.html">
+                <img src="/static/logo.png" alt="RehApp Logo">
+            </a>
+            <span class="logo-text">RehApp</span>
+        </div>
+        <nav>
+            <ul class="left-links">
+                <li><a href="#" data-page="exercises">Exercises</a></li>
+                <li><a href="#" data-page="contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+
+
+</body>
+
+<script>
+    function loadPage(page) {
+        console.log('loadPage called with page:', page);
+        fetch(`/load-template/${page}`)
+            .then(response => response.text())
+            .then(html => {
+                console.log('Loaded HTML content:', html);
+                const contentElement = document.querySelector('.content');
+                if (contentElement) {
+                    contentElement.innerHTML = html;
+                } else {
+                    console.error("Content element not found.");
+                }
+            })
+            .catch(error => console.error('Error loading page:', error));
+    }
+
+    function setupPage() {
+        const links = document.querySelectorAll('.left-links a');
+        links.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                const page = this.getAttribute('data-page');
+                console.log('Link clicked:', page);
+                loadPage(page);
+            });
+        });
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log("DOMContentLoaded event listener executed.");
+        setupPage(); // Call the setupPage function to attach event listeners
+    });
+</script>
+
+</html>

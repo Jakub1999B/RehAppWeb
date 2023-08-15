@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Exercises</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul class="left-links">
+                <li><a href="/trainings">Trainings</a></li>
+                <li><a href="/analyze">Analyze</a></li>
+            </ul>
+        </nav>
+        <div class="center-logo">
+            <a href="/">
+                <img src="/static/logo.png" alt="RehApp Logo">
+            </a>
+            <span class="logo-text">RehApp</span>
+        </div>
+        <nav>
+            <ul class="right-links">
+                <li><a href="/exercises">Exercises</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="content">
+        <h2>Trainings</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Bend</th>
+                <th>Circular Raise</th>
+                <th>Abduction</th>
+                <th>Rear Touch</th>
+                <th>Side Bend</th>
+                <th>Duration</th>
+            </tr>
+            {% for record in records %}
+                <tr>
+                    <td>{{ record.id }}</td>
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.bend }}</td>
+                    <td>{{ record.circular_raise }}</td>
+                    <td>{{ record.abduction }}</td>
+                    <td>{{ record.rear_touch }}</td>
+                    <td>{{ record.side_bend }}</td>
+                    <td>{{ record.duration }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</body>
+
+<script src="exercises.js"></script>
+</html>

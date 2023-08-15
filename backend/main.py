@@ -12,9 +12,9 @@ import os
 
 app = FastAPI()
 
-# Configure static files and templates
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+# Configure static3 files and templates3
+app.mount("/static3", StaticFiles(directory="static3"), name="static3")
+templates = Jinja2Templates(directory="templates3")
 
 # Initialize the database table
 def initialize_database():
@@ -97,8 +97,8 @@ async def display_file(file_id: int, request: Request):
 #     conn.commit()
 #     conn.close()
 #
-#     # Delete the file from the filesystem (assuming it's stored in the 'static' directory)
-#     file_path = f"static/{filename}"
+#     # Delete the file from the filesystem (assuming it's stored in the 'static3' directory)
+#     file_path = f"static3/{filename}"
 #     if os.path.exists(file_path):
 #         os.remove(file_path)
 #
@@ -142,7 +142,7 @@ async def list_files(request: Request):
 #     files = [{"id": file_id, "filename": filename, "upload_date": upload_date} for file_id, filename, upload_date in cursor.fetchall()]
 #     conn.close()
 #
-#     return templates.TemplateResponse("list_files.html", {"request": request, "files": files})
+#     return templates3.TemplateResponse("list_files.html", {"request": request, "files": files})
 
 
 

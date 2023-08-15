@@ -1,0 +1,29 @@
+{% extends "home.html" %}
+
+{% block content %}
+        <h2>Trainings</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Bend</th>
+                <th>Circular Raise</th>
+                <th>Abduction</th>
+                <th>Rear Touch</th>
+                <th>Side Bend</th>
+                <th>Duration</th>
+            </tr>
+            {% for record in records %}
+                <tr>
+                    <td>{{ record.id }}</td>
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.bend }}</td>
+                    <td>{{ record.circular_raise }}</td>
+                    <td>{{ record.abduction }}</td>
+                    <td>{{ record.rear_touch }}</td>
+                    <td>{{ record.side_bend }}</td>
+                    <td>{{ record.duration }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+{% endblock %}

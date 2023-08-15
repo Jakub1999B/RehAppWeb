@@ -31,9 +31,9 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static3", StaticFiles(directory="static3"), name="static3")
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="templates3")
 
 
 class FileUpload(BaseModel):
@@ -55,7 +55,7 @@ async def read_root(request: Request):
 #         query = files.insert().values(filename=file.filename)
 #         last_record_id = await database.execute(query)
 #
-#         file_path = f"static/{last_record_id}_{file.filename}"
+#         file_path = f"static3/{last_record_id}_{file.filename}"
 #         with open(file_path, "wb") as f:
 #             shutil.copyfileobj(file.file, f)
 #
@@ -67,7 +67,7 @@ async def read_root(request: Request):
 #         query = files.insert().values(filename=file.filename)
 #         last_record_id = await database.execute(query)
 #
-#         file_path = f"static/{last_record_id}_{file.filename}"
+#         file_path = f"static3/{last_record_id}_{file.filename}"
 #         with open(file_path, "wb") as f:
 #             shutil.copyfileobj(file.file, f)
 #
@@ -87,7 +87,7 @@ async def upload_excel_file(file: UploadFile = File(...)):
         query = files.insert().values(filename=file.filename, is_excel=True)  # Add 'is_excel' column to files table
         last_record_id = await database.execute(query)
 
-        file_path = f"static/{last_record_id}_{file.filename}"
+        file_path = f"static3/{last_record_id}_{file.filename}"
         with open(file_path, "wb") as f:
             f.write(file.file.read())
 
@@ -105,7 +105,7 @@ async def read_file(file_id: int):
     result = await database.fetch_one(query)
 
     if result:
-        file_path = f"static/{result['id']}_{result['filename']}"
+        file_path = f"static3/{result['id']}_{result['filename']}"
         return FileResponse(file_path, media_type="application/octet-stream")
 
     return {"error": "File not found"}
@@ -118,7 +118,7 @@ async def read_file_content(file_id: int):
     result = await database.fetch_one(query)
 
     if result:
-        file_path = f"static/{result['id']}_{result['filename']}"
+        file_path = f"static3/{result['id']}_{result['filename']}"
         try:
             with open(file_path, "r") as f:
                 file_content = f.read()
@@ -146,7 +146,7 @@ async def delete_file(file_id: int):
     result = await database.fetch_one(query)
 
     if result:
-        file_path = f"static/{result['id']}_{result['filename']}"
+        file_path = f"static3/{result['id']}_{result['filename']}"
         try:
             os.remove(file_path)
         except OSError as e:
@@ -176,7 +176,7 @@ async def read_file_table_content(file_id: int, request: Request):
     result = await database.fetch_one(query)
 
     if result:
-        file_path = f"static/{result['id']}_{result['filename']}"
+        file_path = f"static3/{result['id']}_{result['filename']}"
         try:
             with open(file_path, "r") as f:
                 file_content = f.readlines()

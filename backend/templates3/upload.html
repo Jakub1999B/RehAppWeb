@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Excel File</title>
+</head>
+<body>
+    <h1>Upload Excel File</h1>
+    <form action="/uploadfile/" method="post" enctype="multipart/form-data">
+        <label for="file">Select an Excel file:</label>
+        <input type="file" name="file" accept=".xlsx">
+        <button type="submit">Upload</button>
+    </form>
+    <div id="response">
+        <!-- The response message from the server will be displayed here -->
+    </div>
+
+    <script>
+        const form = document.querySelector('form');
+        const responseDiv = document.getElementById('response');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/uploadfile/', {
+                    method: 'POST',
+                    body: formData,
+                });
+                const data = await response.json();
+                responseDiv.innerHTML = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error('Error uploading file:', error);
+            }
+        });
+    </script>
+</body>
+</html>
+
+</html>

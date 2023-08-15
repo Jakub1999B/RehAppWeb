@@ -8,9 +8,9 @@ import numpy as np
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static3", StaticFiles(directory="static3"), name="static3")
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="templates3")
 
 @app.post("/uploadfile/")
 async def upload_file(file: UploadFile = File(...)):

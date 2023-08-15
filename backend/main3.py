@@ -8,7 +8,7 @@ from fastapi import Request, Depends, HTTPException
 from fastapi.templating import Jinja2Templates
 
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="templates3")
 import os
 import pandas as pd
 from typing import List
