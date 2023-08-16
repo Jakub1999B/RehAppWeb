@@ -192,8 +192,27 @@ async def analyze(file: UploadFile = File(...)):
 
         db.add(new_record)
         db.commit()
+        df = pd.read_excel(file.file)
+        # Return the necessary data for the plots
+        plot_data = {
+            "seconds_elapsed": df['seconds_elapsed'].tolist(),
+            "acc_x": df["acc_x"].tolist(),
+            "acc_y": df["acc_y"].tolist(),
+            "acc_z": df["acc_z"].tolist(),
+            "gra_x": df["gra_x"].tolist(),
+            "gra_y": df["gra_y"].tolist(),
+            "gra_z": df["gra_z"].tolist(),
+            "gyr_x": df["gyr_x"].tolist(),
+            "gyr_y": df["gyr_y"].tolist(),
+            "gyr_z": df["gyr_z"].tolist(),
+            "ori_x": df["ori_x"].tolist(),
+            "ori_y": df["ori_y"].tolist(),
+            "ori_z": df["ori_z"].tolist(),
+        }
 
-        return encoded_content
+        return {"summary_count": encoded_content, "plot_data": plot_data}
+
+        # return encoded_content
     except Exception as e:
         print("Error:", e)
         raise

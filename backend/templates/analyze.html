@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Add this script tag to include the Plotly library -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link rel="stylesheet" href="/static/styles.css">
     <title>Exercises</title>
 </head>
@@ -62,6 +64,13 @@
             </div>
         </div>
 
+        <div id="plot-container" style="display: none;">
+            <div id="accelerometer-plot" class="plot"></div>
+            <div id="gravity-plot" class="plot"></div>
+            <div id="gyroscope-plot" class="plot"></div>
+            <div id="orientation-plot" class="plot"></div>
+        </div>
+
 
     </div>
 
@@ -78,12 +87,50 @@
         fileLabel.textContent = fileName;
     });
 
+    // Function to display plots
+    function displayPlots(data) {
+        // Clear existing plots
+        document.querySelectorAll('.plot').forEach(plot => {
+            plot.innerHTML = '';
+        });
+
+        // Create and display accelerometer plot
+        Plotly.newPlot('accelerometer-plot', [
+            { x: data.seconds_elapsed, y: data.acc_x, name: 'acc_x' },
+            { x: data.seconds_elapsed, y: data.acc_y, name: 'acc_y' },
+            { x: data.seconds_elapsed, y: data.acc_z, name: 'acc_z' }
+        ]);
+                // Create and display gravity plot
+        Plotly.newPlot('gravity-plot', [
+            { x: data.seconds_elapsed, y: data.gra_x, name: 'gra_x' },
+            { x: data.seconds_elapsed, y: data.gra_y, name: 'gra_y' },
+            { x: data.seconds_elapsed, y: data.gra_z, name: 'gra_z' }
+        ]);
+
+        // Create and display gyroscope plot
+        Plotly.newPlot('gyroscope-plot', [
+            { x: data.seconds_elapsed, y: data.gyr_x, name: 'gyr_x' },
+            { x: data.seconds_elapsed, y: data.gyr_y, name: 'gyr_y' },
+            { x: data.seconds_elapsed, y: data.gyr_z, name: 'gyr_z' }
+        ]);
+
+        // Create and display orientation plot
+        Plotly.newPlot('orientation-plot', [
+            { x: data.seconds_elapsed, y: data.ori_x, name: 'ori_x' },
+            { x: data.seconds_elapsed, y: data.ori_y, name: 'ori_y' },
+            { x: data.seconds_elapsed, y: data.ori_z, name: 'ori_z' }
+        ]);
+                // Show the plot container
+        const plotContainer = document.getElementById('plot-container');
+        plotContainer.style.display = 'block';
+    }
 
 
     document.getElementById('analyze-button').addEventListener('click', async () => {
         const fileInput = document.getElementById('file-input');
         const loadingContainer = document.getElementById('loading-container');
         const resultContainer = document.getElementById('result-container');
+        const plotContainer = document.getElementById('plot-container'); // New
         const formData = new FormData();
         formData.append('file', fileInput.files[0]);
 
@@ -97,15 +144,19 @@
             });
 
             if (response.ok) {
-                const result = await response.json();
+                const resul = await response.json();
+                const result = resul.summary_count
                 document.getElementById('bend-result').textContent = result.BEND || '0';
                 document.getElementById('circular-raise-result').textContent = result.CIRCULAR_RAISE || '0';
                 document.getElementById('abduction-result').textContent = result.ABDUCTION || '0';
                 document.getElementById('rear-touch-result').textContent = result.REAR_TOUCH || '0';
                 document.getElementById('side-bend-result').textContent = result.SIDE_BEND || '0';
+                // Display plots using the returned plot data
+                displayPlots(resul.plot_data); // New
 
                 loadingContainer.style.display = 'none'; // Hide loading process
                 resultContainer.style.display = 'block'; // Display result container
+                plotContainer.style.display = 'block'; // Display plot container
             } else {
                 console.error('Analyze request failed.');
                 loadingContainer.style.display = 'none'; // Hide loading process on error
@@ -115,6 +166,10 @@
             loadingContainer.style.display = 'none'; // Hide loading process on error
         }
     });
+
+
+
+
 </script>
 
 

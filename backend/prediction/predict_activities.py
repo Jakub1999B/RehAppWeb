@@ -19,8 +19,8 @@ def sliding_windows_0(data, window_size, overlap):
     return windows
 
 
-def plot_data_0(data):
-    print(len(data))
+def plot_data(data):
+    data = pd.read_excel(data)
     plt.figure(figsize=(10,15))
     plt.subplot(4,1,1)
     plt.plot(data['seconds_elapsed'], data['acc_x'])
