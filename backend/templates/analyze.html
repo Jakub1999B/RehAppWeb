@@ -30,10 +30,9 @@
 
     <div class="content">
 
-
-        <h2>Analyze</h2>
         <form id="upload-form" enctype="multipart/form-data">
-            <input type="file" id="file-input" accept=".xlsx, .csv" required>
+            <label for="file-input" id="file-label">Choose File</label>
+            <input type="file" id="file-input" style="display: none;" accept=".xlsx, .csv" required>
             <button type="button" id="analyze-button">Analyze</button>
         </form>
         <div id="loading-container" style="display: none;" class="loading-container">
@@ -70,6 +69,17 @@
 </body>
 
 <script>
+    const fileLabel = document.getElementById('file-label');
+    const fileInput = document.getElementById('file-input');
+
+    // Listen for changes to the file input
+    fileInput.addEventListener('change', () => {
+        const fileName = fileInput.files[0]?.name || 'Choose File';
+        fileLabel.textContent = fileName;
+    });
+
+
+
     document.getElementById('analyze-button').addEventListener('click', async () => {
         const fileInput = document.getElementById('file-input');
         const loadingContainer = document.getElementById('loading-container');

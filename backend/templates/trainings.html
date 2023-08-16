@@ -30,7 +30,7 @@
 
 
     <div class="content">
-        <h2>Trainings</h2>
+        <h2 class="train">Your past trainings</h2>
         <table>
             <tr>
                 <th>ID</th>
@@ -46,11 +46,11 @@
                 <tr>
                     <td>{{ record.id }}</td>
                     <td>{{ record.date }}</td>
-                    <td>{{ record.bend }}</td>
-                    <td>{{ record.circular_raise }}</td>
-                    <td>{{ record.abduction }}</td>
-                    <td>{{ record.rear_touch }}</td>
-                    <td>{{ record.side_bend }}</td>
+                    <td {% if record.bend < 2 %}class="red-bg"{% endif %}>{{ record.bend }}</td>
+                    <td {% if record.circular_raise < 2 %}class="red-bg"{% endif %}>{{ record.circular_raise }}</td>
+                    <td {% if record.abduction < 2 %}class="red-bg"{% endif %}>{{ record.abduction }}</td>
+                    <td {% if record.rear_touch < 2 %}class="red-bg"{% endif %}>{{ record.rear_touch }}</td>
+                    <td {% if record.side_bend < 2 %}class="red-bg"{% endif %}>{{ record.side_bend }}</td>
                     <td>{{ record.duration }}</td>
                 </tr>
             {% else %}
