@@ -335,8 +335,38 @@ table tr:hover {
     justify-content: center; /* Vertically center the content */
     align-items: center; /* Horizontally center the content */
 
-
 }
+
+/* ... (previous CSS rules) ... */
+
+/* Add styles for the plot container and rows */
+#plot-container {
+    display: none;
+    margin-top: 30px;
+    text-align: center;
+}
+
+.plot-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    width: 90%; /* Set the width of the plot-row to 90% */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.plot {
+    width: 48%; /* Each plot takes up 48% of the available width (accounting for spacing) */
+    border: 3px solid #58e89e;
+    border-radius: 6px;
+    padding: 10px;
+    box-sizing: border-box; /* Include padding in width calculation */
+    background-color: black;
+}
+
+/* ... (rest of previous CSS rules) ... */
+
+
 
 @keyframes rotate {
     0% {

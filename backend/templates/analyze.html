@@ -65,10 +65,14 @@
         </div>
 
         <div id="plot-container" style="display: none;">
-            <div id="accelerometer-plot" class="plot"></div>
-            <div id="gravity-plot" class="plot"></div>
-            <div id="gyroscope-plot" class="plot"></div>
-            <div id="orientation-plot" class="plot"></div>
+            <div class="plot-row">
+                <div id="accelerometer-plot" class="plot"></div>
+                <div id="gravity-plot" class="plot"></div>
+            </div>
+            <div class="plot-row">
+                <div id="gyroscope-plot" class="plot"></div>
+                <div id="orientation-plot" class="plot"></div>
+            </div>
         </div>
 
 
@@ -93,33 +97,59 @@
         document.querySelectorAll('.plot').forEach(plot => {
             plot.innerHTML = '';
         });
+        // Define the width and height for the plots
+        const plotWidth = 630; // Adjust as needed
+        const plotHeight = 400; // Adjust as needed
 
-        // Create and display accelerometer plot
+        // Create and display accelerometer and gravity plots in the first row
         Plotly.newPlot('accelerometer-plot', [
             { x: data.seconds_elapsed, y: data.acc_x, name: 'acc_x' },
             { x: data.seconds_elapsed, y: data.acc_y, name: 'acc_y' },
             { x: data.seconds_elapsed, y: data.acc_z, name: 'acc_z' }
-        ]);
-                // Create and display gravity plot
+        ], {
+            title: 'Accelerometer Data',
+            xaxis: { title: 'Time (seconds)' },
+            yaxis: { title: 'Acceleration' },
+            width: plotWidth,
+            height: plotHeight
+        });
+
         Plotly.newPlot('gravity-plot', [
             { x: data.seconds_elapsed, y: data.gra_x, name: 'gra_x' },
             { x: data.seconds_elapsed, y: data.gra_y, name: 'gra_y' },
             { x: data.seconds_elapsed, y: data.gra_z, name: 'gra_z' }
-        ]);
+        ], {
+            title: 'Gravity Data',
+            xaxis: { title: 'Time (seconds)' },
+            yaxis: { title: 'Gravity' },
+            width: plotWidth,
+            height: plotHeight
+        });
 
-        // Create and display gyroscope plot
+        // Create and display gyroscope and orientation plots in the second row
         Plotly.newPlot('gyroscope-plot', [
             { x: data.seconds_elapsed, y: data.gyr_x, name: 'gyr_x' },
             { x: data.seconds_elapsed, y: data.gyr_y, name: 'gyr_y' },
             { x: data.seconds_elapsed, y: data.gyr_z, name: 'gyr_z' }
-        ]);
+        ], {
+            title: 'Gyroscope Data',
+            xaxis: { title: 'Time (seconds)' },
+            yaxis: { title: 'Angular Velocity' },
+            width: plotWidth,
+            height: plotHeight
+        });
 
-        // Create and display orientation plot
         Plotly.newPlot('orientation-plot', [
             { x: data.seconds_elapsed, y: data.ori_x, name: 'ori_x' },
             { x: data.seconds_elapsed, y: data.ori_y, name: 'ori_y' },
             { x: data.seconds_elapsed, y: data.ori_z, name: 'ori_z' }
-        ]);
+        ], {
+            title: 'Orientation Data',
+            xaxis: { title: 'Time (seconds)' },
+            yaxis: { title: 'Orientation' },
+            width: plotWidth,
+            height: plotHeight
+        });
                 // Show the plot container
         const plotContainer = document.getElementById('plot-container');
         plotContainer.style.display = 'block';
