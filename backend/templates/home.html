@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>RehApp</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>RehApp — Home</title>
 </head>
 <body>
     <header>
@@ -29,7 +29,19 @@
     </header>
 
     <div class="content">
-        <h2>home</h2>
+        <h2 class="train">Welcome to RehApp</h2>
+        <div class="page-intro">
+            <p>
+                RehApp recognizes rehabilitation exercises from phone sensor recordings.
+                Upload an Excel file with accelerometer, gravity, gyroscope, and orientation data
+                to classify activities, count repetitions, and save your session history.
+            </p>
+            <p>
+                Start on <a href="/analyze">Analyze</a> to upload a recording, review supported
+                movements under <a href="/exercises">Exercises</a>, or check past sessions in
+                <a href="/trainings">Trainings</a>.
+            </p>
+        </div>
     </div>
 </body>
 </html>

@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+eggs/
+*.egg-info/
+*.egg
+.venv/
+venv/
+env/
+ENV/
+
+# Datasets
+data/
+backend/data/
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE / editors
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment / secrets
+.env
+.env.*
+*.pem
+
+# Logs and temp
+*.log
+tmp/
+temp/
+*.tmp

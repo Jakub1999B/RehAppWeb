@@ -18,6 +18,7 @@ from pandas import DataFrame
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import HTMLResponse
 import os
+import tempfile
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -29,7 +30,6 @@ DATABASE_URL = "sqlite:///trainings.db"
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
-Base.metadata.create_all(bind=engine)
 
 # Template Setup
 templates = Jinja2Templates(directory="templates")
@@ -56,6 +56,9 @@ class TrainingRecord(Base):
     rear_touch = Column(Integer)
     side_bend = Column(Integer)
     duration = Column(Integer)
+
+
+Base.metadata.create_all(bind=engine)
 
 
 class CustomJSONEncoder(json.JSONEncoder):
@@ -131,8 +134,9 @@ async def trainings(request: Request):
         records = db.query(TrainingRecord).all()
         print("Records", records)
         return templates.TemplateResponse(
+            request,
             "trainings.html",
-            {"request": request, "records": records},
+            {"records": records},
         )
     except Exception as e:
         print("Error:", e)
@@ -176,9 +180,16 @@ async def trainings(request: Request):
 
 @app.post("/analyzes/", response_class=JSONResponse)
 async def analyze(file: UploadFile = File(...)):
+    temp_path = None
+    db = None
     try:
+        suffix = os.path.splitext(file.filename or "")[1] or ".xlsx"
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+            temp_path = tmp.name
+            tmp.write(await file.read())
+
         db = SessionLocal()
-        df, summary_count, duration = reh_app(file.file)
+        _, summary_count, duration = reh_app(temp_path)
         encoded_content = jsonable_encoder(summary_count)
 
         new_record = TrainingRecord(
@@ -192,8 +203,7 @@ async def analyze(file: UploadFile = File(...)):
 
         db.add(new_record)
         db.commit()
-        df = pd.read_excel(file.file)
-        # Return the necessary data for the plots
+        df = pd.read_excel(temp_path)
         plot_data = {
             "seconds_elapsed": df['seconds_elapsed'].tolist(),
             "acc_x": df["acc_x"].tolist(),
@@ -211,13 +221,14 @@ async def analyze(file: UploadFile = File(...)):
         }
 
         return {"summary_count": encoded_content, "plot_data": plot_data}
-
-        # return encoded_content
     except Exception as e:
         print("Error:", e)
         raise
     finally:
-        db.close()
+        if db is not None:
+            db.close()
+        if temp_path and os.path.exists(temp_path):
+            os.remove(temp_path)
 
 
 

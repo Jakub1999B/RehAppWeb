@@ -131,8 +131,20 @@ def process_predictions(lst, min_length):
     return result
 
 
+_INFER = None
+
+
+def _get_infer():
+    """Load legacy TF SavedModel (Keras 3 cannot use load_model on this format)."""
+    global _INFER
+    if _INFER is None:
+        loaded = tf.saved_model.load('prediction/models/LSTM_w150_o75_e100_p33')
+        _INFER = loaded.signatures['serving_default']
+    return _INFER
+
+
 def recognize_exercise(file_path, scr=False):
-    model = tf.keras.models.load_model('prediction/models/LSTM_w150_o75_e100_p33')
+    infer = _get_infer()
     print(file_path)
     test_file = pd.read_excel(file_path)
     window_size = 150
@@ -157,21 +169,22 @@ def recognize_exercise(file_path, scr=False):
         y = to_categorical(labels)
 
     for i in range(len(windows_pred)):
-        windows_pred[i].drop('activity', axis='columns', inplace=True)
-        windows_pred[i].drop('time', axis='columns', inplace=True)
-        windows_pred[i].drop('seconds_elapsed', axis='columns', inplace=True)
-        windows_pred[i].drop('Unnamed: 0', axis='columns', inplace=True)
+        windows_pred[i].drop(
+            columns=['activity', 'time', 'seconds_elapsed', 'Unnamed: 0'],
+            inplace=True,
+            errors='ignore',
+        )
         if windows_pred[i].values.shape[0] == window_size:
             x.append(windows_pred[i].values)
 
-    X = np.array(x)
+    X = np.array(x, dtype=np.float32)
 
     act = []
     for i in range(len(X)):
         if scr:
             actual_label = np.nonzero(labels[i])[0]
-        a = tf.expand_dims(X[i], axis=0)
-        pred = model.predict(a)
+        a = tf.constant(np.expand_dims(X[i], axis=0), dtype=tf.float32)
+        pred = infer(lstm_8_input=a)['dense_17'].numpy()
         pred_label = np.argmax(pred, axis=1)
         act.append(pred_label[0])
 
@@ -326,7 +339,7 @@ def reh_app(file_path, sc=False):
 
     summary_count = {
         'BEND': BEND,
-        'CIRCULAR_RISE': CIRCULAR_RISE,
+        'CIRCULAR_RAISE': CIRCULAR_RISE,
         'ABDUCTION': ABDUCTION,
         'REAR_TOUCH': REAR_TOUCH,
         'SIDE_BEND': SIDE_BEND

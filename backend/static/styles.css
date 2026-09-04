@@ -337,6 +337,41 @@ table tr:hover {
 
 }
 
+.page-intro {
+    width: 70%;
+    margin: 30px auto;
+    padding: 24px 28px;
+    background-color: #fff;
+    border: 3px solid #58e89e;
+    border-radius: 6px;
+    font-family: 'Times New Roman', sans-serif;
+    font-size: 18px;
+    line-height: 1.5;
+    color: #000;
+}
+
+.page-intro p {
+    margin-bottom: 14px;
+}
+
+.page-intro p:last-child {
+    margin-bottom: 0;
+}
+
+.page-intro a {
+    color: #000;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.page-intro a:hover {
+    color: #58e89e;
+}
+
+.contact-card p {
+    margin-bottom: 12px;
+}
+
 /* ... (previous CSS rules) ... */
 
 /* Add styles for the plot container and rows */
